@@ -1,5 +1,8 @@
 #Cent OS 7 の違い
 
+ifcfg-eth0
+ifcfg-enp0s3
+
 参考
 http://qiita.com/sion_cojp/items/115e1671fcbc8f214aee
 
