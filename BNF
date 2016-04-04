@@ -1,0 +1,17 @@
+
+<digit>::= 0|1|2|3|4|5|6|7|8|9
+<hexalpha> ::= |A|B|C|D|E|F
+<hex> ::= 0x
+<hexdigit> ::= <hex>(<digit>|<hexalpha>)|<hex>+(<digit>|<hexalpha>)  --合ってるか分からん
+<hexdigit> ::= [ <hex>(<digit>|<hexalpha>) ]+ -- +は 括弧の内を１回以上の繰り返し　* は 0 回以上の繰り返し　たぶん
+IDENTIFIER
+  : 
+
+<letter>|<identifier><digit>|<identifier><letter>
+
+--四則演算の構文解析
+--計算の優先順位が低い順
+<expr>   ::= <term> [ ('+'|'-') <term> ]*
+<term>   ::= <factor> [ ('*'|'/') <factor> ]*
+<factor> ::= <number> | '(' <expr> ')'
+<number> :== 1つ以上の数字
