@@ -1,0 +1,308 @@
+===ExtendComboBox
+
+Dim cmb As ComboBox
+
+
+'初めに実行してください
+Public Sub InitSetComboBox(Combo As ComboBox)
+    Set cmb = Combo
+
+End Sub
+
+
+'ByRef 参照渡し　変数を変更すると元の値も変更される
+'ByVal 値渡し   変数を変更しても参照元は変更されない
+'配列をコンボボックスにセットします
+Public Sub SetComboItems(Items() As String)
+
+'配列の数だけそのデータをセットするよ
+For i = LBound(Items) To UBound(Items)
+    cmb.AddItem Items(i)
+
+
+Next
+
+End Sub
+=================
+==ExtendListBox
+Dim list As MSForms.ListBox
+
+
+'初めに実行してください
+Public Sub Init(ListBox As MSForms.ListBox)
+    Set list = ListBox
+
+End Sub
+
+
+'ByRef 参照渡し　変数を変更すると元の値も変更される
+'ByVal 値渡し   変数を変更しても参照元は変更されない
+'配列をコンボボックスにセットします
+Public Sub SetItems(table As table)
+
+list.RowSource = table.GetRange
+
+End Sub
+===========================
+==ObjectManager
+'元になるフォームを指定する
+Public Sub InitSetForm(UserForm As MSForms.UserForm)
+
+
+    Dim c As Object
+    For Each c In UserForm.Controls
+        Dim temp As Variant
+        
+        
+        temp = split(c.Name, "__")
+        
+        '規約に当てはまらないのは無視
+        If UBound(temp) = 0 Then
+        
+            GoTo GotoNext
+        
+        End If
+        
+    '分岐処理
+    Select Case temp(0)
+    
+        Case "cmb"
+            Call SetCombo(c, temp(1))
+        
+        Case "list"
+            Call SetList(c, temp(1))
+        
+    End Select
+        
+        
+        
+GotoNext:
+    Next c
+
+
+End Sub
+
+
+
+
+Function SetList(list As MSForms.Control, ByVal argument As String)
+
+    Dim readTable As table
+    Set readTable = New table
+    readTable.InitSetData (argument)
+        
+        
+    Dim exList As ExtendListBox
+    Set exList = New ExtendListBox
+    Call exList.Init(list)
+    Call exList.SetItems(readTable)
+
+
+
+Set readTable = Nothing
+
+End Function
+
+
+
+Function SetCombo(Combo As ComboBox, ByVal argument As String)
+
+'テーブル読み込み　コンボボックスへセット
+'配列(1)がシート名　配列(2)が対象カラム名
+        Dim readTable As table
+        Set readTable = New table
+
+
+    Dim TableName_and_ColName As Variant
+        
+        TableName_and_ColName = split(argument, "_")
+
+readTable.InitSetData (TableName_and_ColName(0))
+
+
+Dim exCmd As ExtendComboBox
+Set exCmd = New ExtendComboBox
+Call exCmd.InitSetComboBox(Combo)
+
+Call exCmd.SetComboItems(readTable.GetItemsAsString(TableName_and_ColName(1)))
+
+Set readTable = Nothing
+
+End Function
+========================
+==Table
+
+'最終行と列のチェックはリアルタイムの方がいいのか？
+
+
+Dim sheet As Worksheet
+Dim ColumnCount As Integer
+Dim RowCount As Integer
+Dim TableName As String
+
+
+'sub と function の違いは値を返すか返さないか
+'初めに実行してください
+Public Sub InitSetData(SheetName As String)
+
+TableName = SheetName
+Set sheet = ThisWorkbook.Worksheets(SheetName)
+
+
+ColumnCount = sheet.Cells(1, Columns.Count).End(xlToLeft).Column
+
+
+RowCount = sheet.Cells(Rows.Count, 1).End(xlUp).Row
+
+
+
+End Sub
+
+
+Public Function GetRange() As String
+    Dim rng As Range
+    Set rng = Range(Cells(2, 1).Address)
+    
+    Dim address1 As String, address2 As String
+    
+    address1 = rng.Address
+    
+    Set rng = Range(Cells(RowCount, ColumnCount).Address)
+    address2 = rng.Address
+    
+    
+    Dim strRange As String
+    
+    If RowCount = 1 Then
+        strRange = ""
+        
+    Else
+        
+        strRange = TableName + "!" + address1 + ":" + address2
+        
+    End If
+    
+    
+    GetRange = strRange
+    
+
+End Function
+
+Public Function Name() As String
+    Name = TableName
+End Function
+
+Public Function SizeColumn() As Integer
+    SizeColumn = ColumnCount
+End Function
+
+Public Function SizeRow() As Integer
+    SizeRow = RowCount
+End Function
+
+'対象のカラム列のアイテムを配列で返します
+Public Function GetItemsAsString(ByVal ColumnName As String) As String()
+
+
+Dim ColIndex As Integer
+Dim Items() As String
+ReDim Items(RowCount - 2) As String
+
+ColIndex = GetColumn(ColumnName)
+
+
+'不安
+For i = 2 To RowCount
+    Items(i - 2) = sheet.Cells(i, ColIndex).Value
+Next
+
+GetItemsAsString = Items()
+
+End Function
+
+
+Public Function GetSum(ByVal ColumnName As String) As Variant
+Dim ColIndex As Integer, CountOfSum As Double
+ColIndex = GetColumn(ColumnName)
+CountOfSum = 0
+
+For i = 2 To RowCount
+    CountOfSum = CountOfSum + sheet.Cells(i, ColIndex).Value
+Next
+
+GetSum = CDec(CountOfSum)
+
+End Function
+
+
+
+Public Function GetColumnName(ByVal index As Integer) As String
+
+    GetColumnName = sheet.Cells(1, index).Value
+
+End Function
+
+'カラム名から対象の列番号を返します
+Private Function GetColumn(ColumnName As String) As Integer
+
+
+Dim ColumnExist As Boolean
+ColumnExist = False
+
+Dim returnIndex As Integer
+
+
+
+
+
+ For i = 1 To ColumnCount
+ 
+        If sheet.Cells(1, i).Value = ColumnName Then
+            returnIndex = i
+            ColumnExist = True
+            Exit For
+        Else
+        
+        End If
+        
+Next
+
+
+
+
+If ColumnExist = True Then
+
+    GetColumn = returnIndex
+Else
+     MsgBox Error(9) + " カラム：" + ColumnName + " が存在しません"
+End If
+
+End Function
+
+Public Function GetRow(index As Integer) As Scripting.Dictionary
+    
+    
+    
+    Dim mDic As New Scripting.Dictionary
+    
+    If index <= 0 Then
+        
+        For i = 1 To ColumnCount
+            mDic.Add sheet.Cells(1, i).Value, ""
+        Next
+    
+    
+    Else
+        
+        For i = 1 To ColumnCount
+            mDic.Add sheet.Cells(1, i).Value, sheet.Cells(index + 1, i).Value
+        Next
+    
+    
+    End If
+    
+
+    Set GetRow = mDic
+    
+End Function
+======================--
