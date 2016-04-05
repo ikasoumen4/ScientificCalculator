@@ -1,5 +1,8 @@
 #CentOS7 ネットワーク設定
 
+疑問
+違うネットワークにはなぜつながらないの？（NAT除く)
+
 VirtualBox に CENT OS7をインストール
 
 eth1 NAT接続
