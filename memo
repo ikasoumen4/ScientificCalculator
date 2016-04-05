@@ -1,0 +1,13 @@
+NVRAM
+MIPSプロセッサ
+KIPSプロセッサ？？
+lupx2.0　ＯＳ？
+キーマイコン
+
+イベント状態遷移
+意味イベントの構築
+#define CLINE   DEBUG((" %s:%d ",__FILE__, __LINE__))
+
+DEBUG_TMP(args)                 COPY_DEBUG3(J, Ssdk, args, -1)
+DEBUG_TMP(args)                 (void)0
+
