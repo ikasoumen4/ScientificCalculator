@@ -1,8 +1,8 @@
 #include<stdio.h>
 #include<assert.h>
-#include "utility/mystring.h"
+#include "utility/string.h"
 
-#define DEBUG //コメントアウトしたりして切り替えてください。
+//#define DEBUG //コメントアウトしたりして切り替えてください。
 
 
 #if defined DEBUG
@@ -24,45 +24,34 @@ int main(int argc, char *argv[]){
 		GetHelp();
 	}
 
+
+
+	//char str[10];
+	
+	char s1[] = "aaaaa";
+	char *s2 = argv[0];
+	strcat(s1,s2);
+	printf("%s\n",s1);
+	
+
+
 	int i;
-
-	printf("%d\n",slen(argv[1]));
-	debug();
-	char *str = "                          ";
-	debug();
-
 	//size_t l;	//TODO:size_t ってなに
 
-
-	//自作の　strcpy(char *str1, const char *str2)　第２引数は破壊されないことを保証するためconst char となっている
 	for(i = 1; i < argc; i++){
 		debug();
-		
-
-		
-		debug();
-
-		//int count = 0;
-		//for(count = 0; arg[count] != '\0'; count++){
-			
-			
-			//printf("%01x %c\n", &arg[count], arg[count]);	//TODO:08　の意味が分からない　x X は16進数
+		printf("%s : %d\n",argv[i],strlen(argv[i]));
+		debug();	
+			//printf("%01x %c\n", &str[count], str[count]);	//TODO:08　の意味が分からない　x X は16進数
 		//}
 
 	}
-	debug();
-	printf("%s\n",str);
-	debug();
-
-	//printf("%s\n", *argv[0]);	//NG ポインタを渡したらそれはchar型にはならないため
-
 
 }
 
 
 void GetHelp(){
 	printf("please input statement\n");
-
 }
 
 
