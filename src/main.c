@@ -28,7 +28,7 @@ int main(int argc, char *argv[]){
 
 	//char str[10];
 	
-	char s1[] = "aaaaa";
+	char s1[] = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa";
 	char *s2 = argv[0];
 	strcat(s1,s2);
 	printf("%s\n",s1);
