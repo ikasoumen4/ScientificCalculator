@@ -40,8 +40,12 @@ int main(void){
 	printf("char *p[] = { \"PAUL\", \"X\",\"MAC\" };\n");
 	printf("各要素が置かれる領域は、連続性や順序は保証されない\n");
 
+	printf("空白などで隣り合う文字リテラルはコンパイル時に連結されます\n");
+	printf("test1" "test2" "test3" "\n");
 
-
+	//const char s[] = "test";
+	//printf("test1" s); //文字リテラルではないので不可
+	//ダブルクォーテーションはシングルクォーテーションの集合ととらえる？？
 
 }
 
