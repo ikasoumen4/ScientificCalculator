@@ -1,3 +1,5 @@
+http://qiita.com/yohhoy/items/960ee7a7b502e5c764b4
+
 # ScientificCalculator
 
 関数電卓とは、化学・工学・数学など計算向けに設計された電卓。
