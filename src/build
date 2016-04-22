@@ -1,0 +1,5 @@
+rm *.o
+
+gcc -c lexer.c
+gcc main.c lexer.o
+

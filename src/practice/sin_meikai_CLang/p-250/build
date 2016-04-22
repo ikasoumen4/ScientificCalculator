@@ -1,0 +1,6 @@
+
+rm *.o
+
+gcc -c getchr.c
+gcc -c ungetchr.c
+gcc get_test.c getchr.o ungetchr.o

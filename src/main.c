@@ -1,57 +1,63 @@
 #include<stdio.h>
-#include<assert.h>
-#include "utility/string.h"
+#include<stdlib.h>
+#include<string.h>
 
-//#define DEBUG //コメントアウトしたりして切り替えてください。
-
-
-#if defined DEBUG
-	#define debug() printf("%s:%d\n",__FILE__,__LINE__)
-#else
-	#define debug() //何も実行しないというか空文字に置きかえられる
-#endif
+#include "lexer.h"
 
 
-//My Utility
-//char *strcpy(char *s1, char *s2);
+static void show_help(void);
 
-void GetHelp();
-
-int main(int argc, char *argv[]){
+int main(int argc, char* argv[]){
 	
-
-	if(argc == 1){
-		GetHelp();
+	if(argc < 2){
+		show_help();
+		return 0;
 	}
 
-
-
-	//char str[10];
-	
-	char s1[] = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa";
-	char *s2 = argv[0];
-	strcat(s1,s2);
-	printf("%s\n",s1);
-	
-
-
-	int i;
-	//size_t l;	//TODO:size_t ってなに
+	int i = 0;
+	int buf = 0;
 
 	for(i = 1; i < argc; i++){
-		debug();
-		printf("%s : %d\n",argv[i],strlen(argv[i]));
-		debug();	
-			//printf("%01x %c\n", &str[count], str[count]);	//TODO:08　の意味が分からない　x X は16進数
-		//}
+		
+		int s_count;
+
+		for(s_count = 0; argv[i][s_count] != '\0'; s_count++){
+			buf++;
+		}
 
 	}
 
+	
+	char* chunk = malloc(buf + 1);
+
+	if(chunk == NULL){
+		printf("メモリの確保に失敗しました。\n");
+	}
+
+	memset(chunk,'\0',buf + 1);
+	int chunk_count = 0;
+	
+	for(i = 1; i < argc; i++){
+		int s_count;
+		char s;
+
+		strcat(chunk,argv[i]);
+
+	}
+
+
+	LexState state;
+	LexState* lex = &state;
+	lex_new(lex, chunk);
+	//get_token(lex, chunk);
+
+	free(chunk);
+
 }
 
 
-void GetHelp(){
-	printf("please input statement\n");
+static void show_help(void){
+
+	printf("COMMAND [EXPRESION]...\n");
+	printf("式でワイルドカード（掛け算）を使う場合シングルクォーテーションなどで囲ってください\n");
 }
-
-
