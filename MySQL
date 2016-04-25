@@ -1,0 +1,115 @@
+
+#SQL練習
+[参考URL](http://mysqlweb.net/category/4008564-1.html)
+
+#コマンドライン
+//ダンプ
+mysqldump -u user_name -p Database_name > file.sql
+
+#REPL基本コマンド
+status
+show databases
+
+#効率アップ
+ mysql --auto-rehash //テーブルやカラムの補完が効くらしい
+ ctrl + c が使えない！　代わりに\cのコマンドが用意されている
+
+#基礎
+databasesの実態は
+データベース毎にディレクトリが作成され管理される
+/var/lib/mysql/　例えば、左記フォルダ上にフォルダを作るとshow databasesで認識された（ふつうはcreateコマンド）
+フォルダ内にdb.opt（コンフィグファイル？）がある
+
+
+#基礎コマンド
+データベース操作
+create database XXXX;
+drop database XXXX;
+use XXXX //操作対象のデータベース変更
+
+show tables
+describe XXXX //テーブルの構造を表示
+DESC XXXX //同上
+show columns from user; //同上
+
+select user,host from mysql.user; //current databaseがmysqlなら名前空間を付ける必要はない
+
+
+CREATE TABLE XXXX_tbl (
+XXXX_CD INT(3),
+XXXX_NAME VARCHAR(10),
+PRIMARY KEY (XXXX_CD)
+);
+
+//テーブルの定義を見る
+show create table XXXX_tbl;
+
+//テーブル属性の更新
+ALTER TABLE user CONVERT TO CHARACTER SET utf8;
+
+//カラム属性の更新
+alter table XXXX_tbl modify XXXX_column varchar(10) character set utf8;
+
+ユーザー作成
+GRANT ALL ON XXXX_DB.* TO user@localhost IDENTIFIED BY 'passward'; 
+//ワイルドカードはテーブルかと思われるユーザーにあるデータベースの全てのテーブルに対する操作の全権限を与える
+SHOW GRANTS FOR user@localhost //ユーザー名確認
+
+//カラム順に値を設定する場合は、カラムの指定を省力可能 valuesは可変長で追加可能
+INSERT INTO T01Prefecture (PREF_CD, PREF_NAME) VALUES(1,'北海道'),(2,'青森') ...;
+
+//特定条件のデータを更新
+UPDATE T01Prefecture SET PREF_NAME = 'グアム' WHERE PREF_CD = 99;
+
+//全件削除
+DELETE FROM XXXX_tbl;
+
+//テーブルの削除
+DROP TABLE XXXX_tbl;
+
+
+//csvデータの加工　\047でシングルクゥオーテーションになる（文字コード？？）
+awk '{print "\047"$1"\047,\047"$2"\047"}' test.csv > sql.csv
+
+//csvの取り込み　LOCALをつけないとダメだった 改行コードがらみでめんどくさかった
+ LOAD DATA LOCAL INFILE "sql.csv" INTO TABLE T01Prefecture CHARACTER SET utf8 FIELDS TERMINATED BY "," LINES TERMINATED BY "\r";
+
+
+クエリー
+//～の間を検索
+select * from T01Prefecture where PREF_CD >= 8 and PREF_CD <= 15;
+select * from T01Prefecture where PREF_CD BETWEEN 8 and 15; //同上
+
+//in 複数の候補を検索
+select * from T01Prefecture where PREF_CD in (1,8,25);
+
+//あいまい検索
+select * from T01Prefecture where PREF_NAME like '_京都'; // _ は任意の一文字　後ろに二文字何かが続くような場合ヒットしない
+select * from T01Prefecture where PREF_NAME like '%京都%'; // % は任意の0文字以上の文字列
+WHERE PREF_NAME LIKE '%京%' OR PREF_NAME LIKE '%長%';
+
+#結合について
+エリアテーブル
+内部結合(インナージョイン)
+外部結合(アウタージョイン)
+自己結合(セルフジョイン)
+交差結合(クロスジョイン)
+和結合(ユニオン)
+
+
+#テーブルの属性
+ENGINE=InnoDB　データベースのタイプ
+
+
+#基本テーブル
+user
+mysql.user
+
+#テーブル構造
+Field　フィールド名
+Type　データ型
+Null　Nullを許可するかどうか
+Key　主キー
+Default　初期値
+Extra　オートインクリメントなど
+
